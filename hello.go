@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"time"
@@ -11,6 +12,8 @@ const monitoramentos = 5
 const testeEsperaEmSeg = 3
 
 func main() {
+
+	leSitesDoArquivo()
 
 	exibeIntroducao()
 	for {
@@ -29,6 +32,7 @@ func main() {
 			fmt.Println("Nao conheco esse comando")
 		}
 	}
+
 }
 
 func exibeIntroducao() {
@@ -57,7 +61,7 @@ func iniciarMonitoramento() {
 
 	fmt.Println("Monitorando")
 
-	sites := []string{"https://random-status-code.herokuapp.com", "https://www.alura.com.br", "https://www.caelum.com.br"}
+	sites := leSitesDoArquivo()
 
 	for i := 0; i < monitoramentos; i++ {
 		for _, site := range sites {
@@ -70,11 +74,27 @@ func iniciarMonitoramento() {
 
 func testaSite(site string) {
 	var successStatus int = 200
-	resp, _ := http.Get(site)
+	resp, err := http.Get(site)
+
+	if err != nil {
+		fmt.Println("Ocorreu um erro", err)
+	}
 
 	if resp.StatusCode == successStatus {
 		fmt.Println("O site ", site, "foi carregado com sucesso!")
 	} else {
 		fmt.Println("O site ", site, "deu ruim!")
 	}
+}
+
+func leSitesDoArquivo() []string {
+	//arquivo, err := os.Open("sites.txt")
+	arquivo, err := ioutil.ReadFile("sites.txt")
+
+	if err != nil {
+		fmt.Println("Ocorreu um erro", err)
+	}
+
+	fmt.Println(string(arquivo))
+	return []string{}
 }
