@@ -24,3 +24,5 @@ go.sum
 main
 
 .env
+
+basic-monitor-project/log.txt
