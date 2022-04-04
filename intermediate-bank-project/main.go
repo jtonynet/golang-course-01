@@ -1,42 +1,58 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
 
-type ContaCorrente struct {
-	titular     string
-	agencia     int
-	numeroConta int
-	saldo       float64
+	contas "github.com/jtonynet/golang-course-01/contas"
+)
+
+func PagarBoleto(conta verificarConta, valorDoBoleto float64) {
+	conta.Sacar(valorDoBoleto)
 }
 
-func (c *ContaCorrente) Sacar(valorDoSaque float64) (string, float64) {
-	podeSacar := valorDoSaque > 0 && valorDoSaque <= c.saldo
-
-	if podeSacar {
-		c.saldo -= valorDoSaque
-		return "Saque Realizado com sucesso", c.saldo
-	}
-
-	return "Saldo insuficiente", c.saldo
-}
-
-func (c *ContaCorrente) Depositar(valorDoDeposito float64) (string, float64) {
-	if valorDoDeposito > 0 {
-		c.saldo += valorDoDeposito
-		return "Deposito realizado com sucesso", c.saldo
-	}
-
-	return "valor do deposito menor do que zero", c.saldo
-
+type verificarConta interface {
+	Sacar(valor float64) (string, float64)
 }
 
 func main() {
-	contaDaSilvia := ContaCorrente{}
-	contaDaSilvia.titular = "Silvia"
-	contaDaSilvia.saldo = 500.
+	// Transferir
+	/*
+		contaDaSilvia := contas.ContaCorrente{Titular: "Silvia", Saldo: 300.}
+		contaDoGustavo := contas.ContaCorrente{Titular: "Gustavo", Saldo: 100.}
 
-	fmt.Println(contaDaSilvia.saldo)
+		status := contaDaSilvia.Transferir(-200, &contaDoGustavo)
 
-	status, valor := contaDaSilvia.Depositar(2000.)
-	fmt.Println(status, valor)
+		fmt.Println(status)
+		fmt.Println(contaDaSilvia)
+		fmt.Println(contaDoGustavo)
+	*/
+
+	// STRUCTS Aninhadas
+	/*
+		clienteBruno := clientes.Titular{
+			Nome:      "Bruno",
+			CPF:       "000.000.000.00",
+			Profissao: "Desenvolvedor",
+		}
+
+		contaDoBruno := contas.ContaCorrente{
+			Titular:       clienteBruno,
+			NumeroAgencia: 123,
+			NumeroConta:   123456,
+		}
+
+		contaDoBruno.Depositar(500)
+
+		fmt.Println(contaDoBruno)
+		contaDoBruno.Depositar(100)
+
+		fmt.Println(contaDoBruno.ObterSaldo())
+	*/
+
+	// Interfaces
+	contaDoDenis := contas.ContaPoupanca{}
+	contaDoDenis.Depositar(100)
+	PagarBoleto(&contaDoDenis, 60)
+
+	fmt.Println(contaDoDenis.ObterSaldo())
 }
